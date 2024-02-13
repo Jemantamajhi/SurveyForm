@@ -1,0 +1,39 @@
+﻿@* @model IEnumerable<SurveyForm.Models.DbEntities.State>
+
+<select id="stateDropdown">
+    <option value="">Select State</option>
+    @foreach (var state in ViewBag.States)
+    {
+        <option value="@state.Id">@state.StateName</option>
+    }
+</select>
+
+<select id="cityDropdown">
+    <option value="">Select City</option>
+</select>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#stateDropdown').change(function () {
+                var selectedStateId = $(this).val();
+                $.ajax({
+                    type: "GET",
+                    url: "/DropDown/GetCities",
+                    data: { id: selectedStateId },
+                    success: function (data) {
+                        $('#cityDropdown').empty();
+                        $('#cityDropdown').append($('<option>').text("Select City").val(""));
+                        $.each(data, function (index, value) {
+                            $('#cityDropdown').append($('<option>').text(value.name).attr('value', value.id));
+                        });
+                    },
+                    error: function () {
+                        alert('Error loading cities.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+ *@
